@@ -22,41 +22,30 @@ export default async function handler(request, response) {
 
     try{
         //  Need to hook up translated text
-        // const response = await fetch(apiUrl, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         q:text,
-        //         target,
-        //         format: 'text'
-        //     }),
-        // });
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                q:text,
+                target,
+                format: 'text'
+            }),
+        });
 
-        // if (!response.ok) {
-        //     const errorText = await response.text();
-        //     return response.status(response.status).json({error: errorText});
-        // }
+        if (!res.ok) {
+            console.log('Failed...')
+            const errorText = await res.text();
+            return response.status(res.status).json({error: errorText});
+        }
 
-        // const data = await response.json();
-        // response.status(200).json(data);
-
-        // Hard coded response because api key issues
-        return response.status(200).json(
-            {
-                data: {
-                    translations: [
-                        {
-                            "translatedText": "Hola"
-                        }
-                    ]
-                }
-            }
-        )
+        const data = await res.json();
+        return response.status(200).json(data);
     }
     catch (error) {
         console.error('Error in API call');
+        console.log(error)
         response.status(500).json({error: "Server Error"});
     }
 }
